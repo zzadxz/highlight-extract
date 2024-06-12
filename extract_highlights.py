@@ -1,5 +1,6 @@
 import sqlite3
 import os
+import textwrap
 
 db_path = os.path.expanduser(
     '~/Library/Containers/com.apple.iBooksX/Data/Documents/AEAnnotation/AEAnnotation_v10312011_1727_local.sqlite')
@@ -18,9 +19,7 @@ ORDER BY BookID, Color;
 """
 
 cursor.execute(query)
-
 results = cursor.fetchall()
-
 conn.close()
 
 color_mapping = {
@@ -45,13 +44,18 @@ for row in results:
 
     organized_highlights[book_id][color].append(highlight)
 
+divider = "------------"
 with open('organized_highlights.txt', 'w') as file:
+    first_book = True
     for book_id, colors in organized_highlights.items():
-        file.write(f"Book ID: {book_id}\n")
+        if not first_book:
+            file.write(f"\n{divider}\n")
+        first_book = False
+        file.write(f"\nBook ID: {book_id}\n")
         for color, highlights in colors.items():
             file.write(f"  {color} Highlights:\n")
             for highlight in highlights:
-                file.write(f"    - {highlight}\n")
-        file.write("\n")
+                wrapped_highlight = textwrap.fill(highlight, width=80)
+                file.write(f"    - {wrapped_highlight}\n")
 
 print("Organized highlights have been extracted to organized_highlights.txt")
