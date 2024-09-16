@@ -10,3 +10,4 @@
 *.xml
 # Ignore IntelliJ IDEA module files
 *.iml
+.DS_Store
